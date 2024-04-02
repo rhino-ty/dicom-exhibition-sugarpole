@@ -12,7 +12,7 @@ export default function DICOMOperationComp({
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <Button disabled={disabled} variant={'ghost'} size={'sm'}>
             Zoom
           </Button>
@@ -22,7 +22,7 @@ export default function DICOMOperationComp({
         </TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <Button onClick={() => handleOperation('FlipH')} disabled={disabled} variant={'ghost'} size={'sm'}>
             Flip H
           </Button>
@@ -32,7 +32,7 @@ export default function DICOMOperationComp({
         </TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <Button onClick={() => handleOperation('FlipV')} disabled={disabled} variant={'ghost'} size={'sm'}>
             Flip V
           </Button>
@@ -42,7 +42,7 @@ export default function DICOMOperationComp({
         </TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <Button onClick={() => handleOperation('RotateDelta30')} disabled={disabled} variant={'ghost'} size={'sm'}>
             Rotate Delta 30
           </Button>
@@ -52,7 +52,7 @@ export default function DICOMOperationComp({
         </TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <Button onClick={() => handleOperation('Invert')} disabled={disabled} variant={'ghost'} size={'sm'}>
             Invert
           </Button>
@@ -62,7 +62,7 @@ export default function DICOMOperationComp({
         </TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <Button onClick={() => handleOperation('ApplyColormap')} disabled={disabled} variant={'ghost'} size={'sm'}>
             Apply Colormap
           </Button>
