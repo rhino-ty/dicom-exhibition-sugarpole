@@ -1,8 +1,19 @@
+/** core
+ * https://docs.cornerstonejs.org/
+ */
+/** cornerstoneWADOImageLoader
+ * https://docs.cornerstonejs.org/concepts/image-loaders.html
+ * https://github.com/cornerstonejs/cornerstoneWADOImageLoader
+ */
+
 import React, { useEffect, useRef } from 'react';
 import * as cornerstone from 'cornerstone-core';
+import * as cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader';
+import * as dicomParser from 'dicom-parser';
 
+// DICOM 파일 경로를 받기 위한 prop
 interface DICOMViewerProps {
-  dicomFileName: string; // DICOM 파일 경로를 받기 위한 prop
+  dicomFileName: string;
 }
 
 const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName }) => {
@@ -11,18 +22,23 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName }) => {
   useEffect(() => {
     if (!elementRef.current) return;
 
-    const element: HTMLDivElement = elementRef.current;
+    const element = elementRef.current;
 
+    // cornerstoneWADOImageLoader 구성
+    cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
+    cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
     cornerstone.enable(element);
 
-    // prop으로 받은 DICOM 파일 경로를 사용하여 이미지 로드
-    cornerstone.loadImage(`wadouri:${import.meta.env.BASE_URL}/dicom/${dicomFileName}`).then((image) => {
+    // 파일 경로 변경 (예: 'dicomFileName' prop은 'yourfile.dcm'과 같은 값이어야 함)
+    const imageId = `wadouri:${window.location.origin}/dicom/${dicomFileName}`;
+
+    cornerstone.loadImage(imageId).then((image) => {
       cornerstone.displayImage(element, image);
 
       let zoom = 1; // 기본 Zoom 레벨 설정
 
+      // 마우스 휠 이벤트로 Zoom 조절
       const onWheel = (e: WheelEvent) => {
-        // 마우스 휠 이벤트로 Zoom 조절
         e.preventDefault();
         const viewport = cornerstone.getViewport(element);
 

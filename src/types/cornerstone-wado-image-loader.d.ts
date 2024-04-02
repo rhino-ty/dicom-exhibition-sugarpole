@@ -1,5 +1,14 @@
+// cornerstone-wado-image-loader.d.ts
 declare module 'cornerstone-wado-image-loader' {
-  // 여기에 cornerstoneWADOImageLoader의 함수와 객체 타입 정의
-  export function someFunction(): void; // 예시 함수
-  // 기타 필요한 타입 정의
+  import { CornerstoneImage, CornerstoneImageLoader } from 'cornerstone-core';
+  import { DicomParser } from 'dicom-parser';
+
+  // external 객체와 속성들에 대한 타입 정의
+  export const external: {
+    cornerstone: typeof cornerstone;
+    dicomParser: typeof dicomParser;
+  };
+
+  // loadImage 함수의 타입 정의 (임시)
+  export function loadImage(imageId: string): Promise<CornerstoneImage>;
 }
