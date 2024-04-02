@@ -36,7 +36,16 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName }) => {
     cornerstone.loadImage(imageId).then((image) => {
       cornerstone.displayImage(element, image);
 
-      // 마우스 휠 이벤트로 Zoom 조절
+      /// 윈도우 크기가 변경될 때마다 호출될 콜백 함수.
+      const handleResize = () => {
+        // 뷰포트의 크기를 조정하는 로직.
+        if (elementRef.current) {
+          const element = elementRef.current;
+          cornerstone.resize(element, true); // Cornerstone에게 엘리먼트 크기가 변경되었음을 알리는 로직.
+        }
+      };
+
+      /// 마우스 휠 이벤트로 Zoom 조절
       const onWheel = (e: WheelEvent) => {
         e.preventDefault();
 
@@ -71,12 +80,15 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName }) => {
         }
       };
 
-      // 정의한 마우스 휠 이벤트 핸들러를 엘리먼트에 추가
+      // 정의한 마우스 휠 이벤트 핸들러를 엘리먼트에 추가.
       element.addEventListener('wheel', onWheel);
+      // 윈도우 리사이즈 이벤트 리스너를 추가.
+      window.addEventListener('resize', handleResize);
 
       // 컴포넌트가 언마운트 및 DICOM 파일이 변경되어 useEffect가 다시 실행될 때, 이전에 추가한 이벤트 리스너를 제거.
       return () => {
         element.removeEventListener('wheel', onWheel);
+        window.removeEventListener('resize', handleResize);
       };
     });
 
