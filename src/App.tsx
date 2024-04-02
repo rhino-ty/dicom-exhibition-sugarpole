@@ -14,26 +14,26 @@ function App() {
   // 이전 페이지로 이동하는 함수
   const goToPreviousPage = () => {
     setCurrentPage((prev) => (prev > 0 ? prev - 1 : 0));
-    setSelectedImgIdx(null);
+    setSelectedImgName(null);
   };
   // 다음 페이지로 이동하는 함수
   const goToNextPage = () => {
     setCurrentPage((prev) => (prev + 1 < totalPages ? prev + 1 : prev));
-    setSelectedImgIdx(null);
+    setSelectedImgName(null);
   };
   // 현재 페이지에 표시할 이미지 배열 계산
   const currentImages = DCM_NAME.slice(currentPage * imagesPerPage, (currentPage + 1) * imagesPerPage);
 
   // 이미지 클릭 선택 상태
-  const [selectedImgIdx, setSelectedImgIdx] = useState<number | null>(null);
+  const [selectedImgName, setSelectedImgName] = useState<string | null>(null);
   // 이미지 클릭 핸들러
-  const handleSelectImgIdx = (idx: number) => {
-    // selectedImgIdx가 null이 아니고, 클릭한 idx와 상태가 같다면 다시 null로 초기화
-    if (selectedImgIdx !== null && idx === selectedImgIdx) {
-      setSelectedImgIdx(null);
+  const handleSelectImgName = (name: string) => {
+    // selectedImgName가 null이 아니고, 클릭한 name와 상태가 같다면 다시 null로 초기화
+    if (selectedImgName !== null && name === selectedImgName) {
+      setSelectedImgName(null);
       return;
     }
-    setSelectedImgIdx(idx);
+    setSelectedImgName(name);
   };
 
   return (
@@ -46,7 +46,7 @@ function App() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Button disabled={selectedImgIdx === null} variant={'ghost'} size={'sm'}>
+                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
                   Zoom
                 </Button>
               </TooltipTrigger>
@@ -56,7 +56,7 @@ function App() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger>
-                <Button disabled={selectedImgIdx === null} variant={'ghost'} size={'sm'}>
+                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
                   Flip H
                 </Button>
               </TooltipTrigger>
@@ -66,7 +66,7 @@ function App() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger>
-                <Button disabled={selectedImgIdx === null} variant={'ghost'} size={'sm'}>
+                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
                   Flip V
                 </Button>
               </TooltipTrigger>
@@ -76,7 +76,7 @@ function App() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger>
-                <Button disabled={selectedImgIdx === null} variant={'ghost'} size={'sm'}>
+                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
                   Rotate Delta 30
                 </Button>
               </TooltipTrigger>
@@ -86,7 +86,7 @@ function App() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger>
-                <Button disabled={selectedImgIdx === null} variant={'ghost'} size={'sm'}>
+                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
                   Invert
                 </Button>
               </TooltipTrigger>
@@ -96,7 +96,7 @@ function App() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger>
-                <Button disabled={selectedImgIdx === null} variant={'ghost'} size={'sm'}>
+                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
                   Apply Colormap
                 </Button>
               </TooltipTrigger>
@@ -104,7 +104,7 @@ function App() {
                 <p>이미지의 픽셀 값에 따라 색상을 지정합니다.</p>
               </TooltipContent>
             </Tooltip>
-            <Button disabled={selectedImgIdx === null} variant={'ghost'} size={'sm'}>
+            <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
               Reset
             </Button>
           </TooltipProvider>
@@ -123,7 +123,7 @@ function App() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Button disabled={selectedImgIdx === null} variant={'ghost'} size={'sm'}>
+                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
                   Zoom
                 </Button>
               </TooltipTrigger>
@@ -133,7 +133,7 @@ function App() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger>
-                <Button disabled={selectedImgIdx === null} variant={'ghost'} size={'sm'}>
+                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
                   Flip H
                 </Button>
               </TooltipTrigger>
@@ -143,7 +143,7 @@ function App() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger>
-                <Button disabled={selectedImgIdx === null} variant={'ghost'} size={'sm'}>
+                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
                   Flip V
                 </Button>
               </TooltipTrigger>
@@ -153,7 +153,7 @@ function App() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger>
-                <Button disabled={selectedImgIdx === null} variant={'ghost'} size={'sm'}>
+                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
                   Rotate Delta 30
                 </Button>
               </TooltipTrigger>
@@ -163,7 +163,7 @@ function App() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger>
-                <Button disabled={selectedImgIdx === null} variant={'ghost'} size={'sm'}>
+                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
                   Invert
                 </Button>
               </TooltipTrigger>
@@ -173,7 +173,7 @@ function App() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger>
-                <Button disabled={selectedImgIdx === null} variant={'ghost'} size={'sm'}>
+                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
                   Apply Colormap
                 </Button>
               </TooltipTrigger>
@@ -181,7 +181,7 @@ function App() {
                 <p>이미지의 픽셀 값에 따라 색상을 지정합니다.</p>
               </TooltipContent>
             </Tooltip>
-            <Button disabled={selectedImgIdx === null} variant={'ghost'} size={'sm'}>
+            <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
               Reset
             </Button>
           </TooltipProvider>
@@ -189,10 +189,10 @@ function App() {
         <div className='flex h-full flex-col items-center justify-between gap-10 sm:flex-row'>
           {currentImages.map((item, idx) => (
             <div
-              key={idx}
-              className={`h-full w-full overflow-hidden rounded shadow-lg shadow-zinc-600 transition-all sm:w-[45%] ${selectedImgIdx === idx ? 'scale-105 outline outline-4 outline-blue-500' : null}`}
+              key={`${item.dicomFileName}-${idx}`}
+              className={`h-full w-full overflow-hidden rounded shadow-lg shadow-zinc-600 transition-all sm:w-[45%] ${selectedImgName === item.dicomFileName ? 'scale-105 outline outline-4 outline-blue-500' : null}`}
               // 이미지 클릭 시 상태 수정
-              onClick={() => handleSelectImgIdx(idx)}
+              onClick={() => handleSelectImgName(item.dicomFileName)}
             >
               <DICOMViewer dicomFileName={item.dicomFileName} />
             </div>
