@@ -25,7 +25,30 @@ function App() {
   return (
     <main className='h-screen w-full'>
       <header className='flex h-20 items-center justify-between px-8'>
-        <h1 className='text-lg font-medium text-gray-700'>Dicom Viewer(with Cornerstone.js)</h1>
+        <h1 className='text-base font-medium text-gray-700 xl:text-lg'>Dicom Viewer(with Cornerstone.js)</h1>
+        <div className='flex gap-3'>
+          <Button variant={'ghost'} size={'sm'}>
+            Zoom
+          </Button>
+          <Button variant={'ghost'} size={'sm'}>
+            Flip H
+          </Button>
+          <Button variant={'ghost'} size={'sm'}>
+            Flip V
+          </Button>
+          <Button variant={'ghost'} size={'sm'}>
+            Rotate Delta 30
+          </Button>
+          <Button variant={'ghost'} size={'sm'}>
+            Invert
+          </Button>
+          <Button variant={'ghost'} size={'sm'}>
+            Apply Colormap
+          </Button>
+          <Button variant={'ghost'} size={'sm'}>
+            Reset
+          </Button>
+        </div>
         <div className='flex gap-2'>
           <Button onClick={goToPreviousPage} disabled={currentPage === 0} className=''>
             Previous Image
@@ -38,7 +61,7 @@ function App() {
       <section className='container mx-auto h-[calc(100%-6rem)] w-full'>
         <div className='flex h-full flex-row items-center justify-between gap-10'>
           {currentImages.map((item, idx) => (
-            <div key={idx} className='h-full w-1/2'>
+            <div key={idx} className='h-full w-1/2 overflow-hidden rounded shadow-lg shadow-zinc-600'>
               <DICOMViewer dicomFileName={item.dicomFileName} />
             </div>
           ))}
