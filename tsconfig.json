@@ -6,7 +6,7 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
-    /* cornerstone-wado-image-loader 타입 선언 추가 */
+    /* cornerstone-wado-image-loader.d.ts, cornerstone-tools.d.ts 타입 선언 추가 */
     "typeRoots": ["./node_modules/@types", "./types"],
 
     /* shardcn */
