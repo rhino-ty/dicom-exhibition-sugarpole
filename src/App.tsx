@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import DICOMViewer from './components/dicom-viewer';
 import { Button } from './components/ui/button';
-import DICOMCommandComp from './components/dicom-operation';
+import DICOMOperationComp from './components/dicom-operation';
 
 function App() {
   /// 각 이미지 페이지네이션 관련 로직
@@ -32,12 +32,22 @@ function App() {
     // selectedImgName가 null이 아니고, 클릭한 name와 상태가 같다면 다시 null로 초기화
     if (selectedImgName !== null && name === selectedImgName) {
       setSelectedImgName(null);
+      setOperation(null);
       return;
     }
     setSelectedImgName(name);
+    setOperation(null);
   };
 
-  //
+  /// DICOM 명령어 관련 로직
+  // 명령어 상태
+  const [operation, setOperation] = useState<string | null>(null);
+  // 명령어 조작 관련 핸들러
+  const handleOperation = (operation: string) => {
+    setOperation(operation);
+  };
+
+  console.log(operation);
 
   return (
     <main className='h-screen w-full'>
@@ -46,7 +56,7 @@ function App() {
           Dicom Viewer<span className='hidden xl:inline'>(with Cornerstone.js)</span>
         </h1>
         <div className='hidden gap-3 lg:flex'>
-          <DICOMCommandComp disabled={selectedImgName === null} />
+          <DICOMOperationComp handleOperation={handleOperation} disabled={selectedImgName === null} />
         </div>
         <div className='flex gap-2'>
           <Button onClick={goToPreviousPage} disabled={currentPage === 0} className=''>
@@ -59,7 +69,7 @@ function App() {
       </header>
       <section className='container mx-auto h-[calc(100%-10rem)] w-full'>
         <div className='mb-3 grid grid-cols-2 gap-1 sm:flex sm:justify-center md:gap-3 lg:hidden'>
-          <DICOMCommandComp disabled={selectedImgName === null} />
+          <DICOMOperationComp handleOperation={handleOperation} disabled={selectedImgName === null} />
         </div>
         <div className='flex h-full flex-col items-center justify-between gap-10 sm:flex-row'>
           {currentImages.map((item, idx) => (
@@ -69,7 +79,12 @@ function App() {
               // 이미지 클릭 시 상태 수정
               onClick={() => handleSelectImgName(item.dicomFileName)}
             >
-              <DICOMViewer dicomFileName={item.dicomFileName} />
+              <DICOMViewer
+                dicomFileName={item.dicomFileName}
+                isSelected={item.dicomFileName === selectedImgName}
+                operation={operation}
+                setOperation={setOperation}
+              />
             </div>
           ))}
         </div>

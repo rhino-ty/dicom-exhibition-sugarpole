@@ -11,20 +11,23 @@ import * as cornerstone from 'cornerstone-core';
 import * as cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader';
 import * as dicomParser from 'dicom-parser';
 
-// DICOM 파일 경로를 받기 위한 prop
 interface DICOMViewerProps {
   dicomFileName: string;
+  isSelected: boolean;
+  operation: string | null;
+  setOperation: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName }) => {
+const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, operation, setOperation }) => {
   const elementRef = useRef<HTMLDivElement>(null);
 
+  /// 이미지 로딩과 기본 설정을 위한 useEffect
   useEffect(() => {
     if (!elementRef.current) return;
 
     const element = elementRef.current;
 
-    // cornerstoneWADOImageLoader 구성
+    // cornerstone 설정, cornerstoneWADOImageLoader 구성
     cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
     cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
     cornerstone.enable(element);
@@ -79,6 +82,21 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName }) => {
           });
         }
       };
+
+      // 조작 명령에 따라 Cornerstone 뷰포트 설정 변경
+      if (isSelected && operation) {
+        switch (operation) {
+          case 'FlipH':
+            // Flip H 조작 구현
+            const viewport = cornerstone.getViewport(element);
+            if (viewport) {
+              viewport.hflip = !viewport.hflip; // hflip 값을 반전시킵니다.
+              cornerstone.setViewport(element, viewport); // 변경된 뷰포트 설정을 적용합니다.
+            }
+            setOperation(null); // 조작 완료 후 콜백 호출
+            break;
+        }
+      }
 
       // 정의한 마우스 휠 이벤트 핸들러를 엘리먼트에 추가.
       element.addEventListener('wheel', onWheel);

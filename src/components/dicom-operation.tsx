@@ -2,7 +2,13 @@
 import { Button } from './ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
-export default function DICOMCommandComp({ disabled }: { disabled: boolean }) {
+export default function DICOMOperationComp({
+  disabled,
+  handleOperation,
+}: {
+  disabled: boolean;
+  handleOperation: (operation: string) => void;
+}) {
   return (
     <TooltipProvider>
       <Tooltip>
@@ -17,7 +23,7 @@ export default function DICOMCommandComp({ disabled }: { disabled: boolean }) {
       </Tooltip>
       <Tooltip>
         <TooltipTrigger>
-          <Button disabled={disabled} variant={'ghost'} size={'sm'}>
+          <Button onClick={() => handleOperation('FlipH')} disabled={disabled} variant={'ghost'} size={'sm'}>
             Flip H
           </Button>
         </TooltipTrigger>
@@ -27,7 +33,7 @@ export default function DICOMCommandComp({ disabled }: { disabled: boolean }) {
       </Tooltip>
       <Tooltip>
         <TooltipTrigger>
-          <Button disabled={disabled} variant={'ghost'} size={'sm'}>
+          <Button onClick={() => handleOperation('FlipV')} disabled={disabled} variant={'ghost'} size={'sm'}>
             Flip V
           </Button>
         </TooltipTrigger>
@@ -37,7 +43,7 @@ export default function DICOMCommandComp({ disabled }: { disabled: boolean }) {
       </Tooltip>
       <Tooltip>
         <TooltipTrigger>
-          <Button disabled={disabled} variant={'ghost'} size={'sm'}>
+          <Button onClick={() => handleOperation('RotateDelta30')} disabled={disabled} variant={'ghost'} size={'sm'}>
             Rotate Delta 30
           </Button>
         </TooltipTrigger>
@@ -47,7 +53,7 @@ export default function DICOMCommandComp({ disabled }: { disabled: boolean }) {
       </Tooltip>
       <Tooltip>
         <TooltipTrigger>
-          <Button disabled={disabled} variant={'ghost'} size={'sm'}>
+          <Button onClick={() => handleOperation('Invert')} disabled={disabled} variant={'ghost'} size={'sm'}>
             Invert
           </Button>
         </TooltipTrigger>
@@ -57,7 +63,7 @@ export default function DICOMCommandComp({ disabled }: { disabled: boolean }) {
       </Tooltip>
       <Tooltip>
         <TooltipTrigger>
-          <Button disabled={disabled} variant={'ghost'} size={'sm'}>
+          <Button onClick={() => handleOperation('ApplyColormap')} disabled={disabled} variant={'ghost'} size={'sm'}>
             Apply Colormap
           </Button>
         </TooltipTrigger>
@@ -65,7 +71,7 @@ export default function DICOMCommandComp({ disabled }: { disabled: boolean }) {
           <p>이미지의 픽셀 값에 따라 색상을 지정합니다.</p>
         </TooltipContent>
       </Tooltip>
-      <Button disabled={disabled} variant={'ghost'} size={'sm'}>
+      <Button onClick={() => handleOperation('Reset')} disabled={disabled} variant={'ghost'} size={'sm'}>
         Reset
       </Button>
     </TooltipProvider>
