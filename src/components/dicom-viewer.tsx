@@ -86,7 +86,7 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName }) => {
     };
   }, [dicomFileName]);
 
-  return <div ref={elementRef} style={{ width: '512px', height: '512px' }}></div>;
+  return <div ref={elementRef} className={'h-full w-full'} />;
 };
 
 export default DICOMViewer;
