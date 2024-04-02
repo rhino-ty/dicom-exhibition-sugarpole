@@ -6,10 +6,11 @@
  * https://github.com/cornerstonejs/cornerstoneWADOImageLoader
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as cornerstone from 'cornerstone-core';
 import * as cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader';
 import * as dicomParser from 'dicom-parser';
+// import * as cornerstoneTools from 'cornerstone-tools';
 
 interface DICOMViewerProps {
   dicomFileName: string;
@@ -21,7 +22,8 @@ interface DICOMViewerProps {
 const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, operation, setOperation }) => {
   const elementRef = useRef<HTMLDivElement>(null);
 
-  /// 이미지 로딩과 기본 설정을 위한 useEffect
+  /// 이미지 로딩과 기본 설정을 위한 useEffect.
+  // 또한 Operation 버튼이 아닌 이벤트리스너를 통해 일어나는 기능도 여기에 포함.
   useEffect(() => {
     if (!elementRef.current) return;
 
@@ -38,6 +40,11 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
     // display
     cornerstone.loadImage(imageId).then((image) => {
       cornerstone.displayImage(element, image);
+
+      // const pixelData = image.getPixelData();
+      // let imageData = new ImageData(image.width, image.height);
+      // imageData.data.set(pixelData);
+      // setImageData(imageData);
 
       /// 윈도우 크기가 변경될 때마다 호출될 콜백 함수.
       const handleResize = () => {
@@ -83,27 +90,12 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
         }
       };
 
-      // 조작 명령에 따라 Cornerstone 뷰포트 설정 변경
-      if (isSelected && operation) {
-        switch (operation) {
-          case 'FlipH':
-            // Flip H 조작 구현
-            const viewport = cornerstone.getViewport(element);
-            if (viewport) {
-              viewport.hflip = !viewport.hflip; // hflip 값을 반전시킵니다.
-              cornerstone.setViewport(element, viewport); // 변경된 뷰포트 설정을 적용합니다.
-            }
-            setOperation(null); // 조작 완료 후 콜백 호출
-            break;
-        }
-      }
-
       // 정의한 마우스 휠 이벤트 핸들러를 엘리먼트에 추가.
       element.addEventListener('wheel', onWheel);
       // 윈도우 리사이즈 이벤트 리스너를 추가.
       window.addEventListener('resize', handleResize);
 
-      // 컴포넌트가 언마운트 및 DICOM 파일이 변경되어 useEffect가 다시 실행될 때, 이전에 추가한 이벤트 리스너를 제거.
+      // then이 끝났을 때, 이전에 추가한 이벤트 리스너를 제거.
       return () => {
         element.removeEventListener('wheel', onWheel);
         window.removeEventListener('resize', handleResize);
@@ -116,7 +108,63 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
     };
   }, [dicomFileName]);
 
+  /// 사용자 조작(Operation)을 처리하기 위한 useEffect
+  useEffect(() => {
+    if (!elementRef.current || !isSelected || !operation) return;
+
+    const element = elementRef.current;
+    const viewport = cornerstone.getViewport(element);
+
+    if (viewport) {
+      switch (operation) {
+        // Flip H: 좌우 바꾸기
+        case 'FlipH':
+          viewport.hflip = !viewport.hflip;
+          cornerstone.setViewport(element, viewport);
+          break;
+        // Flip V: 상하 바꾸기
+        case 'FlipV':
+          viewport.vflip = !viewport.vflip;
+          cornerstone.setViewport(element, viewport);
+          break;
+        case 'RotateDelta30':
+          viewport.rotation = (viewport.rotation + 30) % 360;
+          cornerstone.setViewport(element, viewport);
+          break;
+        case 'Invert':
+          viewport.invert = !viewport.invert;
+          cornerstone.setViewport(element, viewport);
+          break;
+        case 'ApplyColormap':
+          // const mapImageData = applyColormap(imageData);
+          // cornerstone.displayImage(element, mapImageData);
+          break;
+        case 'Reset':
+          cornerstone.reset(element);
+          break;
+      }
+    }
+    // 조작 완료 후 operation 상태 초기화
+    setOperation(null);
+  }, [isSelected, operation, setOperation]); // 의존성 배열에 isSelected와 operation 포함
+
   return <div ref={elementRef} className={'h-full w-full'} />;
 };
 
 export default DICOMViewer;
+
+// function applyColormap(imageData: any) {
+//   // imageData는 ImageData 객체여야 하며, imageData.data는 픽셀 데이터를 포함.
+//   const data = imageData.data;
+
+//   for (let i = 0; i < data.length; i += 4) {
+//     // 각 픽셀에 대해 간단한 색상 매핑 로직을 적용
+//     // 예시: 밝기에 따라 파란색 계열로 색상 변경
+//     const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
+//     data[i] = 0; // R 채널
+//     data[i + 1] = 0; // G 채널
+//     data[i + 2] = brightness; // B 채널
+//   }
+
+//   return imageData;
+// }
