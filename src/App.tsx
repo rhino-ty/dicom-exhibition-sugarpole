@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import DICOMViewer from './components/dicom-viewer';
 import { Button } from './components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './components/ui/tooltip';
+import DICOMCommandComp from './components/dicom-operation';
 
 function App() {
   /// 각 이미지 페이지네이션 관련 로직
@@ -24,6 +24,7 @@ function App() {
   // 현재 페이지에 표시할 이미지 배열 계산
   const currentImages = DCM_NAME.slice(currentPage * imagesPerPage, (currentPage + 1) * imagesPerPage);
 
+  /// 이미지 클릭 선택 로직
   // 이미지 클릭 선택 상태
   const [selectedImgName, setSelectedImgName] = useState<string | null>(null);
   // 이미지 클릭 핸들러
@@ -36,6 +37,8 @@ function App() {
     setSelectedImgName(name);
   };
 
+  //
+
   return (
     <main className='h-screen w-full'>
       <header className='flex h-20 items-center justify-between px-8 lg:mb-4'>
@@ -43,71 +46,7 @@ function App() {
           Dicom Viewer<span className='hidden xl:inline'>(with Cornerstone.js)</span>
         </h1>
         <div className='hidden gap-3 lg:flex'>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
-                  Zoom
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>이미지에서 마우스 휠로 조정해 확대/축소시킵니다.</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
-                  Flip H
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>이미지를 좌우로 반전시킵니다.</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
-                  Flip V
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>이미지를 상하로 반전시킵니다.</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
-                  Rotate Delta 30
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>이미지를 시계 방향으로 30도 회전시킵니다.</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
-                  Invert
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>이미지 색상을 반전시킵니다.</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
-                  Apply Colormap
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>이미지의 픽셀 값에 따라 색상을 지정합니다.</p>
-              </TooltipContent>
-            </Tooltip>
-            <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
-              Reset
-            </Button>
-          </TooltipProvider>
+          <DICOMCommandComp disabled={selectedImgName === null} />
         </div>
         <div className='flex gap-2'>
           <Button onClick={goToPreviousPage} disabled={currentPage === 0} className=''>
@@ -120,71 +59,7 @@ function App() {
       </header>
       <section className='container mx-auto h-[calc(100%-10rem)] w-full'>
         <div className='mb-3 grid grid-cols-2 gap-1 sm:flex sm:justify-center md:gap-3 lg:hidden'>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
-                  Zoom
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>이미지에서 마우스 휠로 조정해 확대/축소시킵니다.</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
-                  Flip H
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>이미지를 좌우로 반전시킵니다.</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
-                  Flip V
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>이미지를 상하로 반전시킵니다.</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
-                  Rotate Delta 30
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>이미지를 시계 방향으로 30도 회전시킵니다.</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
-                  Invert
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>이미지 색상을 반전시킵니다.</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
-                  Apply Colormap
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>이미지의 픽셀 값에 따라 색상을 지정합니다.</p>
-              </TooltipContent>
-            </Tooltip>
-            <Button disabled={selectedImgName === null} variant={'ghost'} size={'sm'}>
-              Reset
-            </Button>
-          </TooltipProvider>
+          <DICOMCommandComp disabled={selectedImgName === null} />
         </div>
         <div className='flex h-full flex-col items-center justify-between gap-10 sm:flex-row'>
           {currentImages.map((item, idx) => (
