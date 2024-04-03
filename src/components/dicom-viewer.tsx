@@ -10,9 +10,6 @@ import React, { useEffect, useRef } from 'react';
 import * as cornerstone from 'cornerstone-core';
 import * as cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader';
 import * as dicomParser from 'dicom-parser';
-import * as cornerstoneMath from 'cornerstone-math';
-import * as cornerstoneTools from 'cornerstone-tools';
-import * as Hammer from 'hammerjs';
 
 interface DICOMViewerProps {
   dicomFileName: string;
@@ -30,14 +27,6 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
     if (!elementRef.current) return;
 
     const element = elementRef.current;
-
-    // Cornertone Tools 설정
-    // https://github.com/cornerstonejs/react-cornerstone-viewport/blob/ea5d99c0d19392c7645f0636162dfd263811e166/examples/initCornerstone.js#L21
-    cornerstoneTools.external.Hammer = Hammer;
-    cornerstoneTools.external.cornerstoneMath = cornerstoneMath;
-    cornerstoneTools.external.cornerstone = cornerstone;
-    // cornerstoneTools 초기화, v4 이후로 필수 로직
-    cornerstoneTools.init();
 
     // cornerstone 설정, cornerstoneWADOImageLoader 구성
     cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
@@ -133,6 +122,7 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
           viewport.vflip = !viewport.vflip;
           cornerstone.setViewport(element, viewport);
           break;
+        // Flip V: 상하 바꾸기
         case 'RotateDelta30':
           viewport.rotation = (viewport.rotation + 30) % 360;
           cornerstone.setViewport(element, viewport);
@@ -142,6 +132,8 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
           cornerstone.setViewport(element, viewport);
           break;
         case 'ApplyColormap':
+          viewport.colormap = 'hotIron';
+          cornerstone.setViewport(element, viewport);
           break;
         case 'Reset':
           cornerstone.reset(element);
