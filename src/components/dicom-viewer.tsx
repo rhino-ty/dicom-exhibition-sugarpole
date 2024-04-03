@@ -32,16 +32,17 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
     const element = elementRef.current;
 
     // Cornertone Tools 설정
+    // https://github.com/cornerstonejs/react-cornerstone-viewport/blob/ea5d99c0d19392c7645f0636162dfd263811e166/examples/initCornerstone.js#L21
     cornerstoneTools.external.Hammer = Hammer;
     cornerstoneTools.external.cornerstoneMath = cornerstoneMath;
     cornerstoneTools.external.cornerstone = cornerstone;
-
+    // cornerstoneTools 초기화, v4 이후로 필수 로직
     cornerstoneTools.init();
 
     // cornerstone 설정, cornerstoneWADOImageLoader 구성
     cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
     cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
-
+    // DICOM 이미지 활성화
     cornerstone.enable(element);
 
     // 파일 경로 설정 (예: 'dicomFileName' prop은 'yourfile.dcm'과 같은 값이어야 함)
