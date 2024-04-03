@@ -22,10 +22,9 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
   const elementRef = useRef<HTMLDivElement>(null);
 
   /// 이미지 로딩과 기본 설정을 위한 useEffect.
-  // 또한 Operation 버튼이 아닌 이벤트리스너를 통해 일어나는 기능도 여기에 포함.
+  // 또한 Operation 버튼이 아닌 이벤트리스너를 통해 일어나는 기능(Zoom, Resize)도 여기에 포함.
   useEffect(() => {
     if (!elementRef.current) return;
-
     const element = elementRef.current;
 
     // cornerstone 설정, cornerstoneWADOImageLoader 구성
@@ -45,7 +44,6 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
       const handleResize = () => {
         // 뷰포트의 크기를 조정하는 로직.
         if (elementRef.current) {
-          const element = elementRef.current;
           cornerstone.resize(element, true); // Cornerstone에게 엘리먼트 크기가 변경되었음을 알리는 로직.
         }
       };
@@ -106,8 +104,8 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
   /// 사용자 조작(Operation)을 처리하기 위한 useEffect
   useEffect(() => {
     if (!elementRef.current || !isSelected || !operation) return;
-
     const element = elementRef.current;
+
     const viewport = cornerstone.getViewport(element);
 
     if (viewport) {
@@ -122,19 +120,22 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
           viewport.vflip = !viewport.vflip;
           cornerstone.setViewport(element, viewport);
           break;
-        // Flip V: 상하 바꾸기
+        // Rotate Delta 30: 30도 우측으로 돌리기
         case 'RotateDelta30':
           viewport.rotation = (viewport.rotation + 30) % 360;
           cornerstone.setViewport(element, viewport);
           break;
+        // Invert: 흑백 전환하기
         case 'Invert':
           viewport.invert = !viewport.invert;
           cornerstone.setViewport(element, viewport);
           break;
+        // Apply Colormap: 이미지의 픽셀 값에 따라 색상(hotIron)을 지정하기
         case 'ApplyColormap':
           viewport.colormap = 'hotIron';
           cornerstone.setViewport(element, viewport);
           break;
+        // Reset: 초기화
         case 'Reset':
           cornerstone.reset(element);
           break;
