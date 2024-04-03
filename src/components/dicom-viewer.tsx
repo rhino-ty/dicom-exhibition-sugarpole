@@ -134,6 +134,8 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
         // Apply Colormap: 이미지의 픽셀 값에 따라 색상(hotIron)을 지정하기
         case 'ApplyColormap':
           if (viewport.colormap) {
+            // colormap 없어질 때 초기화 적용
+            resetRenderCanvase(element);
             viewport.colormap = undefined;
             cornerstone.setViewport(element, viewport);
             break;
@@ -143,7 +145,10 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
           break;
         // Reset: 초기화
         case 'Reset':
-          resetRenderCanvase(element);
+          // colormap이 적용되지 않았을 때 resetRenderCanvase 함수가 실행되면 DICOM 캔버스가 없어져 colormap이 있을 때만 실행되게 조건 추가
+          if (viewport.colormap) {
+            resetRenderCanvase(element);
+          }
           cornerstone.reset(element);
           break;
       }
