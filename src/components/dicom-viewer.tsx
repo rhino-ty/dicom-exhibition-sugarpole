@@ -143,6 +143,7 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
           break;
         // Reset: 초기화
         case 'Reset':
+          resetRenderCanvase(element);
           cornerstone.reset(element);
           break;
       }
@@ -155,3 +156,75 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
 };
 
 export default DICOMViewer;
+
+// https://github.com/cornerstonejs/cornerstone/issues/317
+// 이슈 #317에서 제안된 대로 renderCanvas를 리셋하는 함수. 이미지에서 colormap을 제거한 후 알파 채널의 흔적이 남겨지는 버그 수정 함수.
+function resetRenderCanvase(element: HTMLElement) {
+  // `cornerstone.getEnabledElement` 함수를 사용
+  // 주어진 HTML 엘리먼트 및 도구들(renderingTools 등)을 포함한 enabledElement 객체
+  const enabledElement: EnabledElementWithRenderingTools = cornerstone.getEnabledElement(element);
+
+  // 타입 안정을 위한 조건
+  if (!enabledElement.renderingTools || !enabledElement.renderingTools.renderCanvas) {
+    console.error('Rendering tools or render canvas not found');
+    return;
+  }
+
+  // colormapId와 colorLut 속성을 undefined로 설정해, 이전에 적용된 컬러맵 설정을 제거.
+  enabledElement.renderingTools.colormapId = undefined;
+  enabledElement.renderingTools.colorLut = undefined;
+
+  // 렌더링 캔버스의 2D context를 가져옴. `willReadFrequently` 옵션은 getImageData 함수의 연산 성능을 최적화.
+  const renderCanvas = enabledElement.renderingTools.renderCanvas;
+  const canvasContext = renderCanvas.getContext('2d', { willReadFrequently: true });
+
+  // 컨텍스트가 성공적으로 가져와진 경우.
+  if (canvasContext) {
+    // 컨텍스트의 fillStyle을 흰색으로 설정.
+    canvasContext.fillStyle = 'white';
+    // fillRect 함수를 사용하여 전체 캔버스를 흰색으로 설정. 이를 통해 루미넌스 조정
+    canvasContext.fillRect(0, 0, renderCanvas.width, renderCanvas.height);
+
+    // 캔버스의 현재 이미지 데이터. 이미지 처리를 위함.
+    const renderCanvasData = canvasContext.getImageData(0, 0, renderCanvas.width, renderCanvas.height);
+
+    // renderCanvasContext 및 renderCanvasData 속성 업데이트 후 렌더링 툴에 저장.
+    enabledElement.renderingTools.renderCanvasContext = canvasContext;
+    enabledElement.renderingTools.renderCanvasData = renderCanvasData;
+  }
+  // 컨텍스트를 가져오는데 실패한 경우.
+  else {
+    console.error('Fail to take Canvas Context');
+    return;
+  }
+}
+
+// function resetRenderCanvas(element: HTMLElement) {
+//   const enabledElement = cornerstone.getEnabledElement(element);
+//   // 'enabledElement'가 'undefined'인지 확인
+//   if (!enabledElement || !enabledElement.canvas) {
+//     return;
+//   }
+
+//   const canvas = enabledElement.canvas;
+//   const context = canvas.getContext('2d');
+
+//   // 렌더링 캔버스를 흰색으로 채움으로써 알파 채널 리셋
+//   if (context) {
+//     console.log(context);
+
+//     context.fillStyle = 'white';
+//     context.fillRect(0, 0, canvas.width, canvas.height);
+//   } else {
+//     console.error('Canvas context is not available');
+//     return;
+//   }
+
+//   // viewport의 colormap을 명시적으로 undefined로 설정하여 리셋
+//   const viewport = cornerstone.getViewport(element);
+//   if (viewport) {
+//     viewport.colormap = undefined;
+//   }
+//   cornerstone.setViewport(element, viewport);
+//   cornerstone.reset(element);
+// }
