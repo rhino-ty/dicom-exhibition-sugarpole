@@ -42,7 +42,7 @@ function App() {
   /// DICOM 명령어 관련 로직
   // 명령어 상태
   const [operation, setOperation] = useState<string | null>(null);
-  // 명령어 조작 관련 핸들러
+  // 명령어 조작 관련 핸들러, DICOMOperationComp 컴포넌트에 전달해 명령을 조작함.
   const handleOperation = (operation: string) => {
     setOperation(operation);
   };

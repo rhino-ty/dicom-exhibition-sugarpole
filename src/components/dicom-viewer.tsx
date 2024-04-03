@@ -108,6 +108,7 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
 
     const viewport = cornerstone.getViewport(element);
 
+    // https://docs.cornerstonejs.org/api.html#viewport
     if (viewport) {
       switch (operation) {
         // Flip H: 좌우 바꾸기
