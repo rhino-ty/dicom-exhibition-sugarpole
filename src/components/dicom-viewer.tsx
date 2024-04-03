@@ -21,6 +21,9 @@ interface DICOMViewerProps {
 const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, operation, setOperation }) => {
   const elementRef = useRef<HTMLDivElement>(null);
 
+  // 파일 경로 설정 (예: 'dicomFileName' prop은 'yourfile.dcm'과 같은 값이어야 함)
+  const imageId = `wadouri:${window.location.origin}/dicom/${dicomFileName}`;
+
   /// 이미지 로딩과 기본 설정을 위한 useEffect.
   // 또한 Operation 버튼이 아닌 이벤트리스너를 통해 일어나는 기능(Zoom, Resize)도 여기에 포함.
   useEffect(() => {
@@ -32,9 +35,6 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
     cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
     // DICOM 이미지 활성화
     cornerstone.enable(element);
-
-    // 파일 경로 설정 (예: 'dicomFileName' prop은 'yourfile.dcm'과 같은 값이어야 함)
-    const imageId = `wadouri:${window.location.origin}/dicom/${dicomFileName}`;
 
     // display 로직
     cornerstone.loadImage(imageId).then((image) => {
@@ -132,6 +132,11 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
           break;
         // Apply Colormap: 이미지의 픽셀 값에 따라 색상(hotIron)을 지정하기
         case 'ApplyColormap':
+          if (viewport.colormap) {
+            viewport.colormap = undefined;
+            cornerstone.setViewport(element, viewport);
+            break;
+          }
           viewport.colormap = 'hotIron';
           cornerstone.setViewport(element, viewport);
           break;
@@ -143,7 +148,7 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
       // 조작 완료 후 operation 상태 초기화
       setOperation(null);
     }
-  }, [isSelected, operation, setOperation]); // 의존성 배열에 isSelected와 operation 포함
+  }, [isSelected, operation]); // 의존성 배열에 isSelected와 operation 포함
 
   return <div ref={elementRef} className={'h-full w-full'} />;
 };
