@@ -47,8 +47,6 @@ function App() {
     setOperation(operation);
   };
 
-  console.log(operation);
-
   return (
     <main className='h-screen w-full'>
       <header className='flex h-20 items-center justify-between px-8 lg:mb-4'>

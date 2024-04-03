@@ -6,11 +6,13 @@
  * https://github.com/cornerstonejs/cornerstoneWADOImageLoader
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as cornerstone from 'cornerstone-core';
 import * as cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader';
 import * as dicomParser from 'dicom-parser';
-// import * as cornerstoneTools from 'cornerstone-tools';
+import * as cornerstoneMath from 'cornerstone-math';
+import * as cornerstoneTools from 'cornerstone-tools';
+import * as Hammer from 'hammerjs';
 
 interface DICOMViewerProps {
   dicomFileName: string;
@@ -29,22 +31,25 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
 
     const element = elementRef.current;
 
+    // Cornertone Tools 설정
+    cornerstoneTools.external.Hammer = Hammer;
+    cornerstoneTools.external.cornerstoneMath = cornerstoneMath;
+    cornerstoneTools.external.cornerstone = cornerstone;
+
+    cornerstoneTools.init();
+
     // cornerstone 설정, cornerstoneWADOImageLoader 구성
     cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
     cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
+
     cornerstone.enable(element);
 
     // 파일 경로 설정 (예: 'dicomFileName' prop은 'yourfile.dcm'과 같은 값이어야 함)
     const imageId = `wadouri:${window.location.origin}/dicom/${dicomFileName}`;
 
-    // display
+    // display 로직
     cornerstone.loadImage(imageId).then((image) => {
       cornerstone.displayImage(element, image);
-
-      // const pixelData = image.getPixelData();
-      // let imageData = new ImageData(image.width, image.height);
-      // imageData.data.set(pixelData);
-      // setImageData(imageData);
 
       /// 윈도우 크기가 변경될 때마다 호출될 콜백 함수.
       const handleResize = () => {
@@ -136,35 +141,17 @@ const DICOMViewer: React.FC<DICOMViewerProps> = ({ dicomFileName, isSelected, op
           cornerstone.setViewport(element, viewport);
           break;
         case 'ApplyColormap':
-          // const mapImageData = applyColormap(imageData);
-          // cornerstone.displayImage(element, mapImageData);
           break;
         case 'Reset':
           cornerstone.reset(element);
           break;
       }
+      // 조작 완료 후 operation 상태 초기화
+      setOperation(null);
     }
-    // 조작 완료 후 operation 상태 초기화
-    setOperation(null);
   }, [isSelected, operation, setOperation]); // 의존성 배열에 isSelected와 operation 포함
 
   return <div ref={elementRef} className={'h-full w-full'} />;
 };
 
 export default DICOMViewer;
-
-// function applyColormap(imageData: any) {
-//   // imageData는 ImageData 객체여야 하며, imageData.data는 픽셀 데이터를 포함.
-//   const data = imageData.data;
-
-//   for (let i = 0; i < data.length; i += 4) {
-//     // 각 픽셀에 대해 간단한 색상 매핑 로직을 적용
-//     // 예시: 밝기에 따라 파란색 계열로 색상 변경
-//     const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
-//     data[i] = 0; // R 채널
-//     data[i + 1] = 0; // G 채널
-//     data[i + 2] = brightness; // B 채널
-//   }
-
-//   return imageData;
-// }
